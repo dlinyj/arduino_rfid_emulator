@@ -1,16 +1,31 @@
 #define ANTENNA 2 
+#define CARD_ID 0x0001020304
 
 volatile int bit_counter=0;
 volatile int byte_counter=0;
 volatile int half=0;
 
-unsigned char data_card[5][8] = {{0xFF,0xC5,0x38,0x2D,0x19,0xD1,0xC9,0x5A},    //test
-                                {00xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},     // other cards
-				{0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},    //FF818000CAA974C8
-				{0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},    //FF 82 40 1 99 EE 94 1E (моя карта)
-				{0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}};    
+uint8_t data[8];
 
-unsigned char data[8];
+void data_card_ul() {
+  uint64_t card_id = (uint64_t)CARD_ID;
+  uint64_t data_card_ul = (uint64_t)0x1FFF; //first 9 bit as 1
+  int32_t i;
+  uint8_t tmp_nybble;
+  uint8_t column_parity_bits = 0;
+  for (i = 9; i >= 0; i--) { //5 bytes = 10 nybbles
+    tmp_nybble = (uint8_t) (0x0f & (card_id >> i*4));
+    data_card_ul = (data_card_ul << 4) | tmp_nybble;
+    data_card_ul = (data_card_ul << 1) | ((tmp_nybble >> 3 & 0x01) ^ (tmp_nybble >> 2 & 0x01) ^\
+      (tmp_nybble >> 1 & 0x01) ^ (tmp_nybble  & 0x01));
+    column_parity_bits ^= tmp_nybble;
+  }
+  data_card_ul = (data_card_ul << 4) | column_parity_bits;
+  data_card_ul = (data_card_ul << 1); //1 stop bit = 0
+  for (i = 0; i < 8; i++) {
+    data[i] = (uint8_t)(0xFF & (data_card_ul >> (7 - i) * 8));
+  }
+}
 
 void setupTimer1() {
   noInterrupts();
@@ -30,9 +45,8 @@ void setupTimer1() {
 
 void setup() {
   pinMode(ANTENNA, OUTPUT);    
-  for (int i=0;i<8;i++) data[i]=data_card[3][i];
+  data_card_ul();  
   setupTimer1();
-  
 }
 
 void loop() {
