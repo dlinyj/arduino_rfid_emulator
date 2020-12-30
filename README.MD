@@ -1,15 +1,15 @@
-# Эмулятор RFID EM4102
+# RFID emulator EM4102
 
-![Внешний вид эмулятора](img/0000.jpg)
+![Emulator appearance](img/0000.jpg)
 
-Это простейшй эмулятор RFID меток 125 кГц на Arduino. 
+This is the simplest 125 kHz RFID tag emulator on Arduino.
 
-Антенна и резонансный конденсатор взят от шилда RDM6300
+Antenna and resonant capacitor taken from RDM6300 shield.
 
 ![RDM6300](img/0001.jpg)
 
-Всё подключается по следующей схеме:
+Everything is connected according to the following scheme:
 
 ![Схема](img/0002.png)
 
-ID-карты задаётся в дефайне: CARD_ID 0x0001020304
+ID-card is defined in the definition: CARD_ID 0x0001020304
