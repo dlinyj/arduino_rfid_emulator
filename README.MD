@@ -13,3 +13,7 @@ Everything is connected according to the following scheme:
 ![Схема](img/0002.png)
 
 ID-card is defined in the definition: CARD_ID 0x0001020304
+
+An article about this emulator
+In Russian: https://habr.com/ru/company/ruvds/blog/533474/
+In English: https://habr.com/ru/company/ruvds/blog/570114/
